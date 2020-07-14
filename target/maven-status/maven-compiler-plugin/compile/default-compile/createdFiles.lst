@@ -1,0 +1,9 @@
+com\keycloak\userstorage\CustomUserStorageProviderFactory.class
+com\keycloak\userstorage\RemoteUser.class
+com\keycloak\userstorage\UserAdapter.class
+com\keycloak\userstorage\ManageProperties.class
+com\keycloak\userstorage\CustomUserStorageProvider.class
+com\keycloak\userstorage\DatabaseConnector.class
+com\keycloak\userstorage\Constants.class
+com\keycloak\userstorage\Log.class
+com\keycloak\userstorage\UserRepository.class
