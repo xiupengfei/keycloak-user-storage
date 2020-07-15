@@ -64,8 +64,8 @@ public class DatabaseConnector {
         dataSource.setAcquireIncrement(mp.getIntPropertyValue(DB_ACQUIRE_INCREMENT, 4));
 
         //https://github.com/metabase/metabase/issues/10063
-        dataSource.setMaxIdleTime(mp.getIntPropertyValue(DB_MAX_IDLE_TIME, 600)); // 10 minutos
-        dataSource.setIdleConnectionTestPeriod(mp.getIntPropertyValue(DB_IDLE_CONNECTION_TEST_PERIOD, 300)); // 5 minutos
+        dataSource.setMaxIdleTime(mp.getIntPropertyValue(DB_MAX_IDLE_TIME, 600));
+        dataSource.setIdleConnectionTestPeriod(mp.getIntPropertyValue(DB_IDLE_CONNECTION_TEST_PERIOD, 300));
     }
 
 //    private DatabaseConnector(String user, String password, String url, String driver) throws PropertyVetoException {
@@ -78,8 +78,9 @@ public class DatabaseConnector {
 
     public boolean updateCredentials(String username, String password) {
         logger.info("Update User Credentials, Username: " + username + ", Password: [" + password + "]");
+        Connection con = null;
         try {
-            Connection con = dataSource.getConnection();
+            con = dataSource.getConnection();
             PreparedStatement pstmt = con.prepareStatement(Constants.SQL_UPDATE_USER_CREDENTIAL);
             pstmt.setString(1, password);
             pstmt.setString(2, username);
@@ -87,6 +88,14 @@ public class DatabaseConnector {
             return true;
         } catch (SQLException e) {
             logger.warning("Update User Credentials Field: " + e.toString());
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    logger.warning("Close DB Connection Field: " + e.toString());
+                }
+            }
         }
         return false;
     }
@@ -94,8 +103,9 @@ public class DatabaseConnector {
     public List<RemoteUser> getAllUsers() {
         List<RemoteUser> remoteUsers = new ArrayList<>();
         logger.info("getAllUsers");
+        Connection con = null;
         try {
-            Connection con = dataSource.getConnection();
+            con = dataSource.getConnection();
             PreparedStatement pstmt = con.prepareStatement(Constants.SQL_QUERY_ALL_USER);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -108,32 +118,58 @@ public class DatabaseConnector {
             }
         } catch (SQLException e) {
             logger.warning("Get All Users Field: " + e.toString());
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    logger.warning("Close DB Connection Field: " + e.toString());
+                }
+            }
         }
         return remoteUsers;
     }
 
     public void deleteUser(String userId) {
         logger.info("deleteUser, userId: " + userId);
+        Connection con = null;
         try {
-            Connection con = dataSource.getConnection();
+            con = dataSource.getConnection();
             PreparedStatement pstmt = con.prepareStatement(Constants.SQL_DELETE_USER);
             pstmt.setString(1, userId);
             pstmt.execute();
         } catch (SQLException e) {
             logger.warning("Delete User Field: " + e.toString());
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    logger.warning("Close DB Connection Field: " + e.toString());
+                }
+            }
         }
     }
 
     public RemoteUser addUser(RemoteUser user) {
         logger.info("addUser, userName: " + user.getUsername());
+        Connection con = null;
         try {
-            Connection con = dataSource.getConnection();
+            con = dataSource.getConnection();
             PreparedStatement pstmt = con.prepareStatement(Constants.SQL_CREATE_USER);
             pstmt.setString(1, user.getUsername());
             pstmt.execute();
             return user;
         } catch (SQLException e) {
             logger.warning("Add User Field: " + e.toString());
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    logger.warning("Close DB Connection Field: " + e.toString());
+                }
+            }
         }
         return null;
     }
