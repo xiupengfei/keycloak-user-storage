@@ -12,7 +12,7 @@
     <properties>
         <java.version>1.8</java.version>
         <lombok.version>1.16.20</lombok.version>
-        <keycloak.version>10.0.2</keycloak.version>
+        <keycloak.version>20.0.3</keycloak.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <mysql.version>5.1.35</mysql.version>
